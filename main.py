@@ -37,5 +37,6 @@ if __name__ == '__main__':
     print("Standard error: " + str(standard_errors))
     # calculates MSE
     mse = biases ** 2 + standard_errors ** 2
-    print("MSE: " + str(mse))24
+    print("MSE: " + str(mse))
+
 

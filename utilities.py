@@ -134,7 +134,6 @@ def make_f_array(all_k):
         # array has 0 and len(k) + 1 at start and end
         recombination_locs.append(len(k) + 1)
 
-        print(recombination_locs)
         # generates the factors in f_k based on the recombination locations
         prods = []
         for l in range(len(recombination_locs) - 1):

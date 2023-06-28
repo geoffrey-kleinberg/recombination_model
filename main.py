@@ -2,26 +2,22 @@ import emAlgorithm
 import seqGenerator
 import numpy as np
 import scipy.stats
+import os
+import shutil
 
 
-if __name__ == '__main__':
-    # set these parameters before running
-    l = 2
-    q = 0.05
-    pi = [0, 0.1, 0.2, 0.7]
-    n = 100
-    runs = 50
-    folder_name = "l2q005pi3"
-    dataAlreadyGenerated = True
-
+def run_one_sim(l, q, pi, folder_name, n=100, runs=50, override=False):
     print("generating data")
+    if override:
+        shutil.rmtree(f'simData/{folder_name}')
     # makes the data files
-    if not dataAlreadyGenerated:
+    if not os.path.isdir(f'simData/{folder_name}'):
+        os.makedirs(f'simData/{folder_name}')
         seqGenerator.main(l, q, pi, n, runs=runs, file_name_info=folder_name)
 
     print("running EM algorithm")
     # does the EM algorithm on all of them (records results in array)
-    calculated_pis = np.zeros([1, 4])
+    calculated_pis = np.zeros([1, 2 ** l])
     for run in range(runs):
         file = f'simData/{folder_name}/s{run + 1}.txt'
         calculated_pis = np.vstack((calculated_pis, emAlgorithm.main(l, q, file)))
@@ -39,4 +35,25 @@ if __name__ == '__main__':
     mse = biases ** 2 + standard_errors ** 2
     print("MSE: " + str(mse))
 
+
+if __name__ == '__main__':
+    # iterate over all l
+    # test_l = [2, 3, 4, 5]
+    # then over all q
+    # test_q = [0.001, 0.01, 0.05, 0.1]
+    # then over all pi
+    # test_pi = {
+    # 2: [[], [], []],
+    # 3: [[], [], []], ...
+    # }
+    # for i in range(len(test_l)):
+    #    l = test_l[i]
+    #    for j in range(len(test_q)):
+    #        for k in range(len(test_pi[l])):
+    #            folder_name = f'l{i + 2}q{j + 1}pi{k + 1}'
+    #            run_one_sim(test_l[i], test_q[j], test_pi[l][k], folder_name)
+
+
+    # set these parameters before running
+    run_one_sim(3, 0.05, [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125], 'test', override=True)
 

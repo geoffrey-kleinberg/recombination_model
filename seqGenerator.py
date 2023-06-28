@@ -1,18 +1,18 @@
 import random
-import emAlgorithm
+import utilities
 
 
 def main(l, q, true_pi, n, runs=1, file_name_info=''):
-    values = emAlgorithm.make_i_array(l)
-    all_k = emAlgorithm.make_k_array(l)
-    qk = emAlgorithm.make_q_array(q, all_k)
-    fk = emAlgorithm.make_f_array(all_k)
-    weights = [emAlgorithm.f(i, fk, qk, true_pi, all_k) for i in values]
+    values = utilities.make_i_array(l)
+    all_k = utilities.make_k_array(l)
+    qk = utilities.make_q_array(q, all_k)
+    fk = utilities.make_f_array(all_k)
+    weights = [utilities.f(i, fk, qk, true_pi, all_k) for i in values]
 
     for run in range(runs):
 
         data = random.choices(population=values, weights=weights, k=n)
-        file_name = f'simData/{file_name_info}s{run + 1}.txt'
+        file_name = f'simData/{file_name_info}/s{run + 1}.txt'
 
         with open(file_name, 'w') as f:
             for d in data:

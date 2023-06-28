@@ -6,8 +6,17 @@ from scipy.optimize import minimize
 from scipy.spatial import distance
 
 
+def total_log_likelihood(counts, pi, all_i, all_k, fk, qk):
+    likelihood = 0
+    pi_memo = {}
+    for seq in all_i:
+        likelihood += counts[get_ind(seq)] * math.log(f(seq, fk, qk, pi, all_k, pi_memo, {}))
+
+    return likelihood
+
+
 # gets the proportion of sequences that have string match from start to stop
-def pi_seg(start, stop, match, pi, seq_len, memo):
+def pi_seg(start, stop, match, pi, seq_len, memo={}):
     # for memoization
     address = str(start) + str(stop) + str(match)
     if address in memo.keys():
@@ -38,7 +47,7 @@ def ind_to_seq(ind, seq_len):
 
 
 # the f function, the complete likelihood for a given sequence
-def f(seq, fk, qk, pi, possible_k, pi_memo, f_memo):
+def f(seq, fk, qk, pi, possible_k, pi_memo={}, f_memo={}):
     if seq in f_memo.keys():
         return f_memo[seq]
 
@@ -52,7 +61,7 @@ def f(seq, fk, qk, pi, possible_k, pi_memo, f_memo):
 
 
 # the t function that calculates the expectation of r
-def t(seq, k, fk, qk, pi_old, possible_k, pi_old_memo, f_memo, t_memo):
+def t(seq, k, fk, qk, pi_old, possible_k, pi_old_memo={}, f_memo={}, t_memo={}):
     # for memoization
     address = str(seq) + str(k)
     if address in t_memo.keys():
@@ -147,7 +156,7 @@ def make_k_array(seq_len):
 
 
 # overall function for Q(pi | pi^t)
-def q_t(x, pi_old, counts, qk, fk, all_i, all_k, pi_old_memo, f_memo, t_memo):
+def q_t(x, pi_old, counts, qk, fk, all_i, all_k, pi_old_memo={}, f_memo={}, t_memo={}):
     pi = np.append(x, 1 - sum(x))
 
     pi_memo = {}
@@ -168,10 +177,12 @@ def q_t(x, pi_old, counts, qk, fk, all_i, all_k, pi_old_memo, f_memo, t_memo):
     return total * -1
 
 
-def main(seq_len, q):
-    t1 = time.perf_counter()
+def main(seq_len, q, file_name=''):
+    if file_name == '':
+        file_name = 'oldData/sequences' + str(seq_len) +'.txt'
+    # t1 = time.perf_counter()
     # gets the observed data
-    counts = np.array(get_counts('sequences' + str(seq_len) + '.txt', seq_len))
+    counts = np.array(get_counts(file_name, seq_len))
     # our initial guess is just observed data
     guess = counts / sum(counts)
 
@@ -185,26 +196,33 @@ def main(seq_len, q):
     # sets all the fk functions
     fk = make_f_array(all_k)
 
-    print(guess)
+    #print(guess)
+    prev_ll = total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
     for run in range(40):
-        t2 = time.perf_counter()
+        # t2 = time.perf_counter()
         # minimizes the function in (2 ** seq_len) - 1 dimensions in order to guarantee sum is 1
         d = minimize(q_t, guess[:-1], method="Nelder-Mead", bounds=[(0, 1) for _ in range(2 ** seq_len - 1)],
                      args=(guess, counts, qk, fk, all_i, all_k, {}, {}, {}))
 
-        # if there is no significant change
-        if distance.euclidean(np.append(d.x, 1 - sum(d.x)), guess) < 10 ** -7:
-            break
 
         # the minimum is the new guess
         guess = np.append(d.x, 1 - sum(d.x))
-        print(guess)
-        print(time.perf_counter() - t2)
 
-    print(guess)
-    print(time.perf_counter() - t2)
-    print(time.perf_counter() - t1)
+        #print(guess)
+        new_ll = total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
+        improvement = new_ll - prev_ll
+        #print(improvement)
+        if improvement <= 10 ** -6:
+            break
+
+        prev_ll = new_ll
+
+    return guess
+        # print(time.perf_counter() - t2)
+
+    # print(time.perf_counter() - t2)
+    # print(time.perf_counter() - t1)
 
 
 if __name__ == '__main__':
-    main(6, 0.05)
+    main(2, 0.05, file_name='oldData/sequences2.txt')

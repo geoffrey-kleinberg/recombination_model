@@ -45,13 +45,19 @@ def main(seq_len, q, file_name=''):
 
     # gets all possible DNA sequences
     all_i = utilities.make_i_array(seq_len)
-    # gets all possible recombination locations
-    all_k = utilities.make_k_array(seq_len)
 
+    k_method = 1
+    k_gen = [utilities.make_k_array, utilities.make_k_array_2]
+    # gets all possible recombination locations
+    all_k = k_gen[k_method](seq_len)
+
+    q_gen = [utilities.make_q_array, utilities.make_q_array_2]
     # sets qk values
-    qk = utilities.make_q_array(q, all_k)
+    qk = q_gen[k_method](q, all_k)
+
+    f_gen = [utilities.make_f_array, utilities.make_f_array_2]
     # sets all the fk functions
-    fk = utilities.make_f_array(all_k)
+    fk = f_gen[k_method](all_k)
 
     # print(guess)
     prev_ll = utilities.total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
@@ -81,4 +87,4 @@ def main(seq_len, q, file_name=''):
 
 
 if __name__ == '__main__':
-    print(main(2, 0.05, file_name='oldData/sequences2.txt'))
+    print(main(4, 0.05, file_name='oldData/sequences4.txt'))

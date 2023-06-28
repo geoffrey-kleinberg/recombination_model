@@ -1,4 +1,5 @@
 import math
+from itertools import combinations
 
 
 def total_log_likelihood(counts, pi, all_i, all_k, fk, qk):
@@ -114,6 +115,10 @@ def f_creator(prods):
     return lambda seq, pi, memo: math.prod([s(seq, pi, memo) for s in prods])
 
 
+def f_sum(to_sum):
+    return lambda seq, pi, memo: sum([f_a(seq, pi, memo) for f_a in to_sum])
+
+
 # makes all the f_k functions
 def make_f_array(all_k):
     arr = []
@@ -129,7 +134,8 @@ def make_f_array(all_k):
         # array has 0 and len(k) + 1 at start and end
         recombination_locs.append(len(k) + 1)
 
-        # generates the factors in f_k based ont the recombination locations
+        print(recombination_locs)
+        # generates the factors in f_k based on the recombination locations
         prods = []
         for l in range(len(recombination_locs) - 1):
             curr = recombination_locs[l]
@@ -158,3 +164,52 @@ def make_k_array(seq_len):
         arr.append(ind_to_seq(i, seq_len - 1))
 
     return arr
+
+
+def make_k_array_2(seq_len):
+    arr = []
+    bin_len = math.ceil(math.log2(seq_len))
+    for i in range(seq_len):
+        arr.append(ind_to_seq(i, bin_len))
+
+    return arr
+
+
+def make_q_array_2(q, all_k):
+    arr = []
+    highest = get_ind(all_k[-1])
+    for i in all_k:
+        num = get_ind(i)
+        arr.append(q ** (highest - num) * (1 - q) ** num)
+
+    return arr
+
+
+def make_f_array_2(all_k):
+    arr = []
+    num_locations = get_ind(all_k[-1])
+
+    for i in all_k:
+        num_recombinations = num_locations - get_ind(i)
+        possible_recombination_locations = list(combinations(range(1, num_locations + 1), num_recombinations))
+        to_sum = []
+        for r in possible_recombination_locations:
+            locations = list(r)
+            locations.insert(0, 0)
+            locations.append(num_locations + 1)
+
+            prods = []
+            for l in range(len(locations) - 1):
+                curr = locations[l]
+                second = locations[l + 1]
+                prods.append(prod_creator(curr, second))
+
+            to_sum.append(f_creator(prods))
+
+        arr.append(f_sum(to_sum))
+
+    return arr
+
+
+if __name__ == '__main__':
+    pass

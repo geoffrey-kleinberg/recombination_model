@@ -12,7 +12,7 @@ if __name__ == '__main__':
     n = 100
     runs = 50
     folder_name = "l2q005pi3"
-    dataAlreadyGenerated = False
+    dataAlreadyGenerated = True
 
     print("generating data")
     # makes the data files

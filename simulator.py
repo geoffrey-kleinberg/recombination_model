@@ -1,11 +1,11 @@
 import emAlgorithm
 
 
-def run_sim(sim_label, seq_len, q):
+def run_sim(sim_label, seq_len, q, num=50):
     with open(f'rawResultsEM/{sim_label}.txt', 'w') as f:
         f.write('')
 
-    for i in range(1, 51):
+    for i in range(1, num + 1):
         this_result = emAlgorithm.main(seq_len, q, f'simData/{sim_label}/s{i}.txt')
         tab = '\t'
         this_result[0] = tab.join([str(j) for j in this_result[0]])
@@ -14,7 +14,7 @@ def run_sim(sim_label, seq_len, q):
             f.write('\n')
 
         if i % 10 == 0:
-            print(f'{i} out of 50')
+            print(f'{i} out of {num}')
 
 
 def run_all_sims():

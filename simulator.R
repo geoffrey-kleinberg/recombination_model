@@ -14,8 +14,8 @@ joint_ests <- c(ancestor_pair_estimation, ancestor_three_estimation, ancestor_fo
 for (m in 1:3) {
   Len = m + 2
   while (Len <= 5) {
-    for (j in 1:1) {
-      for (k in 1:1) {
+    for (j in 1:4) {
+      for (k in 1:3) {
         
         print(Len)
       

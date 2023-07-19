@@ -89,7 +89,6 @@ def main(seq_len, q, file_name=''):
         # print(guess)
         new_ll = utilities.total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
         improvement = new_ll - prev_ll
-        # print(improvement)
         if improvement <= 10 ** -6:
             break
 
@@ -98,12 +97,7 @@ def main(seq_len, q, file_name=''):
     total_time = time.perf_counter() - t
 
     return [guess, runs, opt_it, total_time]
-    # print(time.perf_counter() - t2)
-
-    # print(time.perf_counter() - t2)
-    # print(time.perf_counter() - t1)
 
 
 if __name__ == '__main__':
-    # print(main(2, 0.05))
     print(main(3, 0.05, file_name='simData/l3q3pi1/s1.txt'))

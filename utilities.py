@@ -11,6 +11,15 @@ def total_log_likelihood(counts, pi, all_i, all_k, fk, qk):
     return likelihood
 
 
+def total_likelihood(counts, pi, all_i, all_k, fk, qk):
+    likelihood = 1
+    pi_memo = {}
+    for seq in all_i:
+        likelihood *= f(seq, fk, qk, pi, all_k, pi_memo, {}) ** counts[get_ind(seq)]
+
+    return likelihood
+
+
 # gets the proportion of sequences that have string match from start to stop
 def pi_seg(start, stop, match, pi, seq_len, memo={}):
     # for memoization

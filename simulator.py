@@ -28,6 +28,7 @@ def run_sim(sim_label, seq_len, q, num=50):
 
 
 def run_all_sims(test_l, test_q, test_pi):
+    print('calculating EM algorithm')
     # runs all simulations over a specified range of l and q
     for seq_len in test_l:
         for j in range(len(test_q)):

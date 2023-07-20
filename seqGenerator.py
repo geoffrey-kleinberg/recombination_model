@@ -27,6 +27,7 @@ def generate_one(seq_len, q, true_pi, n=100, runs=1, file_name_info=''):
 
 
 def generate_all(test_l, test_q, test_pi, n=100, runs=50):
+    print('generating data')
     for seq_len in test_l:
         for q in range(len(test_q)):
             for pi in range(len(test_pi[seq_len])):

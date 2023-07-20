@@ -1,6 +1,7 @@
 import simulator
 import dataInterpreter
 import seqGenerator
+import r_interface
 import emAlgorithm
 
 
@@ -9,7 +10,6 @@ if __name__ == '__main__':
     test_l = [3, 4, 5]
     test_q = [0.001, 0.01, 0.05, 0.1]
     test_pi = {
-        2: [[0.25, 0.25, 0.25, 0.25], [0.1, 0.2, 0.3, 0.4], [0, 0.1, 0.2, 0.7]],
         3: [
             [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125],
             [0.04, 0.06, 0.08, 0.12, 0.14, 0.16, 0.18, 0.22],
@@ -29,8 +29,14 @@ if __name__ == '__main__':
              0.02, 0.1, 0.03, 0.1, 0.04, 0.12]
         ]
     }
+    test_m = {
+        3: [1],
+        4: [1, 2],
+        5: [1, 2, 3]
+    }
     # seqGenerator.generate_all(test_l, test_q, test_pi)
     simulator.run_all_sims(test_l, test_q, test_pi)
+    r_interface.run_all(test_l, test_q, test_pi, test_m)
     dataInterpreter.format_all(test_l, test_q, test_pi)
 
     # TO RUN ONE DATA SET

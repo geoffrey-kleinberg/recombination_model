@@ -22,18 +22,11 @@ def run_sim(sim_label, seq_len, q, num=50):
             print(f'{i} out of {num}')
 
 
-def run_all_sims():
+def run_all_sims(test_l, test_q, test_pi):
     # runs all simulations over a specified range of l and q
-    test_l = [3, 4, 5]
-    test_q = [0.001, 0.01, 0.05, 0.1]
-
     for seq_len in test_l:
         for j in range(len(test_q)):
-            for k in range(1, 4):
-                file_name = f'l{seq_len}q{j + 1}pi{k}'
+            for k in range(len(test_pi[seq_len])):
+                file_name = f'l{seq_len}q{j + 1}pi{k + 1}'
                 print(file_name)
                 run_sim(file_name, seq_len, test_q[j])
-
-
-if __name__ == '__main__':
-    run_all_sims()

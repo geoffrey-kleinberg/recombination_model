@@ -3,9 +3,9 @@ import utilities
 
 
 # main function to generate data
-def main(l, q, true_pi, n, runs=1, file_name_info=''):
-    values = utilities.make_i_array(l)
-    all_k = utilities.make_k_array(l)
+def generate_one(seq_len, q, true_pi, n=100, runs=1, file_name_info=''):
+    values = utilities.make_i_array(seq_len)
+    all_k = utilities.make_k_array(seq_len)
     qk = utilities.make_q_array(q, all_k)
     fk = utilities.make_f_array(all_k)
     # set the weights of each descendant sequence according to recombination model
@@ -22,5 +22,13 @@ def main(l, q, true_pi, n, runs=1, file_name_info=''):
                 f.write(d + "\n")
 
 
+def generate_all(test_l, test_q, test_pi, n=100, runs=50):
+    for seq_len in test_l:
+        for q in range(len(test_q)):
+            for pi in range(len(test_pi[seq_len])):
+                generate_one(seq_len, test_q[q], test_pi[seq_len][pi], n=n, runs=runs,
+                             file_name_info=f'l{seq_len}q{q + 1}pi{pi + 1}')
+
+
 if __name__ == '__main__':
-    main(2, 0.05, [0.1, 0.2, 0.3, 0.4], 100, runs=2, file_name_info='pi1q005l2')
+    generate_one(2, 0.05, [0.1, 0.2, 0.3, 0.4], n=100, runs=50, file_name_info='test')

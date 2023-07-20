@@ -1,8 +1,13 @@
 import emAlgorithm
+import os
 
 
 # runs a simulation (EM algorithm) for all data sets of one l, q, and pi
 def run_sim(sim_label, seq_len, q, num=50):
+
+    if not os.path.isdir('rawResultsEM'):
+        os.mkdir('rawResultsEM')
+
     # clear the results
     with open(f'rawResultsEM/{sim_label}.txt', 'w') as f:
         f.write('')

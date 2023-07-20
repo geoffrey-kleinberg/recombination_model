@@ -1,5 +1,6 @@
 import random
 import utilities
+import os
 
 
 # main function to generate data
@@ -10,6 +11,9 @@ def generate_one(seq_len, q, true_pi, n=100, runs=1, file_name_info=''):
     fk = utilities.make_f_array(all_k)
     # set the weights of each descendant sequence according to recombination model
     weights = [utilities.f(i, fk, qk, true_pi, all_k) for i in values]
+
+    if not os.path.isdir(f'simData/{file_name_info}'):
+        os.makedirs(f'simData/{file_name_info}')
 
     for run in range(runs):
         # choose the correct number of data points from distribution

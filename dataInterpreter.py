@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.stats
+import os
 
 
 # turns one set of raw data into formatted data
@@ -50,6 +51,9 @@ def format_file(file_name, seq_len, true_pi):
     out = np.hstack([np.atleast_2d(i).T for i in estimator_data])
 
     out = np.vstack([out, other_data])
+
+    if not os.path.isdir(f'simResults'):
+        os.mkdir(f'simResults')
 
     # writes all data to file
     with open(f'simResults/{file_name}.txt', 'w') as f:

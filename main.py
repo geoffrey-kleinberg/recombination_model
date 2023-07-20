@@ -1,5 +1,6 @@
 import simulator
 import dataInterpreter
+import seqGenerator
 import emAlgorithm
 
 
@@ -28,7 +29,7 @@ if __name__ == '__main__':
              0.02, 0.1, 0.03, 0.1, 0.04, 0.12]
         ]
     }
-    # seqGenerator.generateAll(test_l, test_q, test_pi)
+    # seqGenerator.generate_all(test_l, test_q, test_pi)
     simulator.run_all_sims(test_l, test_q, test_pi)
     dataInterpreter.format_all(test_l, test_q, test_pi)
 

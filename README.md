@@ -21,22 +21,34 @@ implemented in R. See `DOCUMENTATION.txt` for details.
 Create a file of the binarized DNA sequences, with one observed
 sequence per line. 
 
-To use the EM algorithm: in `emAlgorithm.py`, run main with parameters `L` 
-and `q` representing the length and probability of recombination,
-respectively. The third argument is the path to the file with the
-data.
+To use the EM algorithm: in `emAlgorithm.py`, run `main()` with 
+the following parameters:
+- `L` is an integer with the length of the DNA sequences
+- `q` is a float representing the probability of recombination
+- `file_name` is a path to the file containing the data
 
-To use the Hierarchical estimator: *will be added later*
+To use the Hierarchical estimator: In `simulator.R`, run 
+`get_and_write_estimates` with the following parameters:
+- `L` is an integer with the length of the DNA sequences
+- `q_val` is a float representing the probability of recombination
+- `m` is an integer representing the margin to use, which must be 
+between 1 and `L` - 2, and can't be greater than 3.
+- `n` is the number of DNA sequences in the data set
+- `file_name` is a path to the file containing the data
 
 ### To run a simulation
 
-In `main.py`, set the parameters `test_l`, `test_q`, and `test_pi`.
-Generate the data sets with `simulator.generate_all()`. By default,
-this will generate 50 data sets of 100 DNA sequences for each choice
-of l, q, and pi and save all the data in a `simData` directory. Then,
-run `simulator.run_all_sims()` to run the EM algorithm on each
-data set. Then, run the entire `simulator.R` file to run the
-hierarchical estimator on each data set. Finally, run
-`dataInterpreter.format_all()` to get a summary of the results. 
-This will output the parameter estimates, the MSE, and the computation
-time for each method.
+In `main.py`, set the parameters `test_l`, `test_q`, `test_pi`, and
+`test_pi`. Then, call `run_full_simulation()` to do the simulation. 
+- `test_l` is an array of integers representing the lengths you
+want to test
+- `test_q` is an array of floats representing the recombination
+probabilities you want to test
+- `test_pi` is a dictionary with a key for each element, *L* of 
+`test_l`. The value associated with each key is an array of length
+2^*L* representing the true ancestral distribution.
+- `test_m` is a dictionary with a key for each element, *L* of 
+`test_l`. The value associated with each key is an array with integers
+ranging from 1 to *L -* 2, with a maximum of 4.
+- `generate_new_data` is a Boolean. It is False by default, but can be 
+True if you don't have existing data or want to generate new data.

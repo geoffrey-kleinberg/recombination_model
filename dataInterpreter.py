@@ -2,14 +2,19 @@ import numpy as np
 import scipy.stats
 
 
+# turns one set of raw data into formatted data
 def read_one_set(folder_name, file_name, pis, true_pi):
     data = []
     with open(f'{folder_name}/{file_name}.txt', 'r') as f:
         for line in f:
             data.append([float(i) for i in line.split('\t')])
+    # gets the estimates from each run of simulation
+    # other is data such as time, num iterations, etc
     estimates, other = np.hsplit(np.array(data), np.arange(pis, pis + 1))
+    # take the average of each
     averages = np.average(estimates, axis=0)
     other_averages = np.atleast_2d(np.average(other, axis=0)).T
+    # calculate bias, standard error, and MSE
     biases = averages - true_pi
     se = scipy.stats.sem(estimates)
     mse = biases ** 2 + se ** 2
@@ -17,6 +22,7 @@ def read_one_set(folder_name, file_name, pis, true_pi):
     return averages, mse, other_averages
 
 
+# compiles all raw simulation results into formatted output for one set of samples
 def format_file(file_name, seq_len, true_pi):
     pis = 2 ** seq_len
     max_m = seq_len - 2
@@ -24,10 +30,12 @@ def format_file(file_name, seq_len, true_pi):
     estimator_data = [np.array(true_pi)]
     single_data = []
 
+    # organizes the EM algorithm data
     em_averages, em_mse, em_other_averages = read_one_set('rawResultsEM', file_name, pis, true_pi)
     estimator_data += [em_averages, em_mse]
     single_data += [em_other_averages]
 
+    # organizes the hierarchical estimator data
     for i in range(1, max_m + 1):
         folder = f'rawResultsMCCLm{i}'
         averages, mse, other_averages = read_one_set(folder, file_name, pis, true_pi)
@@ -35,6 +43,7 @@ def format_file(file_name, seq_len, true_pi):
         estimator_data += [mse]
         single_data += [other_averages]
 
+    # adds the non-estimate data to arrays
     other_data = np.vstack(single_data)
     other_data = np.hstack([other_data, np.zeros((3 + max_m, 2 * (max_m + 1)))])
 
@@ -42,6 +51,7 @@ def format_file(file_name, seq_len, true_pi):
 
     out = np.vstack([out, other_data])
 
+    # writes all data to file
     with open(f'simResults/{file_name}.txt', 'w') as f:
         f.write('')
 
@@ -52,6 +62,7 @@ def format_file(file_name, seq_len, true_pi):
         f.write(new_line)
 
 
+# formats data for all simulation results
 def format_all():
     print('formatting all data')
     test_l = [3, 4, 5]
@@ -76,7 +87,7 @@ def format_all():
              0.02, 0.1, 0.03, 0.1, 0.04, 0.12]
         ]
     }
-
+    # calls format_file() for each choice of l, q, and pi
     for seq_len in test_l:
         for j in range(4):
             for k in range(3):

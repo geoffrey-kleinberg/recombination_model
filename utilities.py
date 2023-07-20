@@ -3,6 +3,7 @@ from itertools import combinations
 
 
 def total_log_likelihood(counts, pi, all_i, all_k, fk, qk):
+    # calculates total log likelihood of observed data
     likelihood = 0
     pi_memo = {}
     for seq in all_i:
@@ -12,6 +13,7 @@ def total_log_likelihood(counts, pi, all_i, all_k, fk, qk):
 
 
 def total_likelihood(counts, pi, all_i, all_k, fk, qk):
+    # calculates total likelihood of observed data
     likelihood = 1
     pi_memo = {}
     for seq in all_i:
@@ -173,7 +175,7 @@ def make_k_array(seq_len):
 
     return arr
 
-
+# functions below are if we do a different grouping of latent variables
 def make_k_array_2(seq_len):
     arr = []
     bin_len = math.ceil(math.log2(seq_len))

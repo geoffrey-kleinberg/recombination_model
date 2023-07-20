@@ -43,39 +43,34 @@ def main(seq_len, q, file_name=''):
 
     t = time.perf_counter()
 
-    # t1 = time.perf_counter()
     # gets the observed data
     counts = np.array(utilities.get_counts(file_name, seq_len))
     # our initial guess is just observed data
     guess = counts / sum(counts)
 
     # THERE IS AN ERROR WHEN THE INDEX OF GUESS NOT PASSED INTO Q HAS VALUE 0
-    # THIS NEXT SECTION ENSURES THAT DOESN'T HAPPEN
+    # THIS GUARANTEES THAT WON'T HAPPEN
     non_zero_location = np.where(np.isclose(guess, max(guess)))[0][0]
 
     # gets all possible DNA sequences
     all_i = utilities.make_i_array(seq_len)
 
-    k_method = 0
-    k_gen = [utilities.make_k_array, utilities.make_k_array_2]
     # gets all possible recombination locations
-    all_k = k_gen[k_method](seq_len)
+    all_k = utilities.make_k_array(seq_len)
 
-    q_gen = [utilities.make_q_array, utilities.make_q_array_2]
     # sets qk values
-    qk = q_gen[k_method](q, all_k)
+    qk = utilities.make_q_array(q, all_k)
 
-    f_gen = [utilities.make_f_array, utilities.make_f_array_2]
     # sets all the fk functions
-    fk = f_gen[k_method](all_k)
+    fk = utilities.make_f_array(all_k)
 
-    # print(guess)
+    # gets the log likelihood
     prev_ll = utilities.total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
+    # records the number of runs and optimization iterations
     runs = 0
     opt_it = 0
     while True:
         runs += 1
-        # t2 = time.perf_counter()
         # minimizes the function in (2 ** seq_len) - 1 dimensions in order to guarantee sum is 1
         guess_arg = np.concatenate((guess[:non_zero_location], guess[(non_zero_location + 1):]))
         d = minimize(q_t, guess_arg, method="Nelder-Mead", bounds=[(0, 1) for _ in range(2 ** seq_len - 1)],
@@ -86,8 +81,9 @@ def main(seq_len, q, file_name=''):
         # the minimum is the new guess
         guess = np.insert(d.x, non_zero_location, 1 - sum(d.x))
 
-        # print(guess)
+        # calculate the new log likelihood
         new_ll = utilities.total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
+        # if the improvement is small enough, end the algorithm
         improvement = new_ll - prev_ll
         if improvement <= 10 ** -6:
             break

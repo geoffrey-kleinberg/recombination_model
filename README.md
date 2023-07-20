@@ -28,21 +28,15 @@ data.
 
 To use the Hierarchical estimator: *will be added later*
 
-### To generate data from a known pi
-
-Use `main()` in  `seqGenerator.py` with a given `L`, `q`, `true_pi`,
-and `n`. Can also include a number of data sets to generate (`runs`)
-and a file path (`file_name_info`) within `simData` to save to.
-Data will be saved to `simData/{file_name_info}/s{num}.txt` for use
-in simulation.
-
 ### To run a simulation
 
-Create all data files with the format `simData/{label}/s{num}.txt`,
-where `label` groups data with common L and q values and `num`
-goes from 1 to the number of data sets. Adjust the `L` and `q` in
-`simulator.py` and `simulator.R` as needed, then run both.
-
-Use `format_all()` in `dataInterpreter.py` to get a read-out of the
-results from the simulation. Be sure to set the `L`, `q`, and `pi`
-values that the data were generated with.
+In `main.py`, set the parameters `test_l`, `test_q`, and `test_pi`.
+Generate the data sets with `simulator.generate_all()`. By default,
+this will generate 50 data sets of 100 DNA sequences for each choice
+of l, q, and pi and save all the data in a `simData` directory. Then,
+run `simulator.run_all_sims()` to run the EM algorithm on each
+data set. Then, run the entire `simulator.R` file to run the
+hierarchical estimator on each data set. Finally, run
+`dataInterpreter.format_all()` to get a summary of the results. 
+This will output the parameter estimates, the MSE, and the computation
+time for each method.

@@ -5,6 +5,15 @@ import r_interface
 import emAlgorithm
 
 
+def run_full_simulation(sim_l, sim_q, sim_pi, sim_m, generate_new_data=False):
+    if generate_new_data:
+        seqGenerator.generate_all(sim_l, sim_q, sim_pi)
+
+    simulator.run_all_sims(sim_l, sim_q, sim_pi)
+    r_interface.run_all(sim_l, sim_q, sim_pi, sim_m)
+    dataInterpreter.format_all(sim_l, sim_q, sim_pi)
+
+
 if __name__ == '__main__':
     # TO RUN SIMULATIONS
     test_l = [3, 4, 5]
@@ -34,10 +43,7 @@ if __name__ == '__main__':
         4: [1, 2],
         5: [1, 2, 3]
     }
-    # seqGenerator.generate_all(test_l, test_q, test_pi)
-    simulator.run_all_sims(test_l, test_q, test_pi)
-    r_interface.run_all(test_l, test_q, test_pi, test_m)
-    dataInterpreter.format_all(test_l, test_q, test_pi)
+    run_full_simulation(test_l, test_q, test_pi, test_m)
 
     # TO RUN ONE DATA SET
     # print(emAlgorithm.main(3, 0.05, 'file.txt'))

@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 
 def run_all(test_l, test_q, test_pi, test_m):
@@ -9,6 +10,8 @@ def run_all(test_l, test_q, test_pi, test_m):
                 file_name = f'l{seq_len}q{j + 1}pi{k + 1}'
                 print(file_name)
                 for m in test_m[seq_len]:
+                    if not os.path.isdir(f'rawResultsMCCLm{m}'):
+                        os.mkdir(f'rawResultsMCCLm{m}')
                     run_one(seq_len, test_q[j], m, file_name)
 
 

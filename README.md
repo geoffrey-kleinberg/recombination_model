@@ -28,11 +28,11 @@ the following parameters:
 - `file_name` is a path to the file containing the data
 
 To use the Hierarchical estimator: In `simulator.R`, run 
-`get_and_write_estimates` with the following parameters:
+`get_one_estimate` with the following parameters:
 - `L` is an integer with the length of the DNA sequences
 - `q_val` is a float representing the probability of recombination
 - `m` is an integer representing the margin to use, which must be 
-between 1 and `L` - 2, and can't be greater than 3.
+between 1 and min(3, `L` - 2).
 - `n` is the number of DNA sequences in the data set
 - `file_name` is a path to the file containing the data
 

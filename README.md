@@ -49,6 +49,6 @@ probabilities you want to test
 2^*L* representing the true ancestral distribution.
 - `test_m` is a dictionary with a key for each element, *L* of 
 `test_l`. The value associated with each key is an array with integers
-ranging from 1 to *L -* 2, with a maximum of 4.
+ranging from 1 to *L -* 2, with a maximum of 3.
 - `generate_new_data` is a Boolean. It is False by default, but can be 
 True if you don't have existing data or want to generate new data.

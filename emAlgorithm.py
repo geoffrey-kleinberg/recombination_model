@@ -37,7 +37,7 @@ def q_t(x, pi_old, counts, qk, fk, all_i, all_k, removed, pi_old_memo=None, f_me
     return total * -1
 
 
-def main(seq_len, q, file_name=''):
+def main(seq_len, q, file_name='', view_print=False):
     if file_name == '':
         file_name = 'oldData/sequences' + str(seq_len) + '.txt'
 
@@ -64,36 +64,55 @@ def main(seq_len, q, file_name=''):
     # sets all the fk functions
     fk = utilities.make_f_array(all_k)
 
-    # gets the log likelihood
-    prev_ll = utilities.total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
+    # gets the likelihood
+    prev_ll = utilities.total_likelihood(counts, guess, all_i, all_k, fk, qk)
+    if view_print:
+        print(prev_ll)
     # records the number of runs and optimization iterations
     runs = 0
     opt_it = 0
+    opt_time = 0
     while True:
         runs += 1
         # minimizes the function in (2 ** seq_len) - 1 dimensions in order to guarantee sum is 1
         guess_arg = np.concatenate((guess[:non_zero_location], guess[(non_zero_location + 1):]))
+        t1 = time.perf_counter()
+
         d = minimize(q_t, guess_arg, method="Nelder-Mead", bounds=[(0, 1) for _ in range(2 ** seq_len - 1)],
                      args=(guess, counts, qk, fk, all_i, all_k, non_zero_location, {}, {}, {}))
+        opt_time += time.perf_counter() - t1
 
         opt_it += d.nit
 
         # the minimum is the new guess
         guess = np.insert(d.x, non_zero_location, 1 - sum(d.x))
 
-        # calculate the new log likelihood
-        new_ll = utilities.total_log_likelihood(counts, guess, all_i, all_k, fk, qk)
+        # calculate the new likelihood
+        new_ll = utilities.total_likelihood(counts, guess, all_i, all_k, fk, qk)
         # if the improvement is small enough, end the algorithm
-        improvement = new_ll - prev_ll
+        improvement = (new_ll - prev_ll) / prev_ll
+        if view_print:
+            print("improvement ", improvement)
         if improvement <= 10 ** -6:
             break
 
         prev_ll = new_ll
 
+        if view_print:
+            print("time:", time.perf_counter() - t)
+            print("guess:", guess)
+
     total_time = time.perf_counter() - t
+
+    if view_print:
+        print("time:", opt_time)
+        print("guess:")
+        for i in guess:
+            print(i)
 
     return [guess, runs, opt_it, total_time]
 
 
 if __name__ == '__main__':
-    print(main(3, 0.05, file_name='simData/l3q3pi1/s1.txt'))
+    # main(3, 0.01, file_name='oldData/sequences3.txt', view_print=True)
+    main(10, 0.0003, file_name='real_data.txt', view_print=True)

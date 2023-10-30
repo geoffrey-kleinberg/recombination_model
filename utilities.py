@@ -23,8 +23,10 @@ def total_likelihood(counts, pi, all_i, all_k, fk, qk):
 
 
 # gets the proportion of sequences that have string match from start to stop
-def pi_seg(start, stop, match, pi, seq_len, memo={}):
+def pi_seg(start, stop, match, pi, seq_len, memo=None):
     # for memoization
+    if memo is None:
+        memo = {}
     address = str(start) + str(stop) + str(match)
     if address in memo.keys():
         return memo[address]
@@ -118,7 +120,7 @@ def make_q_array(q, all_k):
 
 def prod_creator(start, stop):
     # returns a function that calculates one of the factors in the f_k
-    return lambda seq, pi, memo: pi_seg(start, stop, seq[start:stop], pi, len(seq), memo)
+    return lambda seq, pi, memo: pi_seg(start, stop, seq[start:stop], pi, len(seq), memo=memo)
 
 
 def f_creator(prods):
@@ -174,6 +176,7 @@ def make_k_array(seq_len):
         arr.append(ind_to_seq(i, seq_len - 1))
 
     return arr
+
 
 # functions below are if we do a different grouping of latent variables
 def make_k_array_2(seq_len):

@@ -16,6 +16,14 @@ implemented in R. See `DOCUMENTATION.txt` for details.
 
 ## How To Use
 
+### Set-up
+
+When you first clone the repo, run the following commands in your terminal from this directory.
+
+`python3 -m venv .venv`
+`source .venv/bin/activate`
+`pip install -r requirements.txt`
+
 ### To run 1 data set
 
 Create a file of the binarized DNA sequences, with one observed
@@ -39,7 +47,7 @@ between 1 and min(3, `L` - 2).
 ### To run a simulation
 
 In `main.py`, set the parameters `test_l`, `test_q`, `test_pi`, and
-`test_pi`. Then, call `run_full_simulation()` to do the simulation. 
+`test_m`. Then, call `run_full_simulation()` to do the simulation. 
 - `test_l` is an array of integers representing the lengths you
 want to test
 - `test_q` is an array of floats representing the recombination

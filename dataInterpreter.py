@@ -27,6 +27,11 @@ def read_one_set(folder_name, file_name, pis, true_pi):
 def format_file(file_name, seq_len, true_pi):
     pis = 2 ** seq_len
     max_m = seq_len - 2
+    if max_m > 3:
+        max_m = 3
+        print("max_m is greater than 3")
+    # max_m = 3
+    # max_m = 0
 
     estimator_data = [np.array(true_pi)]
     single_data = []

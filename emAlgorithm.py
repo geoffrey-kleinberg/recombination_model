@@ -29,9 +29,11 @@ def q_t(x, pi_old, counts, qk, fk, all_i, all_k, removed, pi_old_memo=None, f_me
         # for all possible recombinations
         for k in all_k:
             # add to the total likelihood according to equation
-            total += utilities.t(i, k, fk, qk, pi_old, all_k, pi_old_memo, f_memo, t_memo) * \
-                     math.log(fk[utilities.get_ind(k)](i, pi, pi_memo)) \
-                     * counts[utilities.get_ind(i)]
+            c = fk[utilities.get_ind(k)](i, pi, pi_memo) 
+            if c > 0:
+                total += utilities.t(i, k, fk, qk, pi_old, all_k, pi_old_memo, f_memo, t_memo) * \
+                        math.log(c) \
+                        * counts[utilities.get_ind(i)]
 
     # multiply by -1 because the optimization function minimizes
     return total * -1
@@ -47,6 +49,7 @@ def main(seq_len, q, file_name='', view_print=False):
     counts = np.array(utilities.get_counts(file_name, seq_len))
     # our initial guess is just observed data
     guess = counts / sum(counts)
+    # guess = np.array([0, 0.1, 0.1, 0.3, 0.2, 0.1, 0.1, 0.1])
 
     # THERE IS AN ERROR WHEN THE INDEX OF GUESS NOT PASSED INTO Q HAS VALUE 0
     # THIS GUARANTEES THAT WON'T HAPPEN
@@ -114,5 +117,5 @@ def main(seq_len, q, file_name='', view_print=False):
 
 
 if __name__ == '__main__':
-    # main(3, 0.01, file_name='oldData/sequences3.txt', view_print=True)
-    main(10, 0.0003, file_name='real_data.txt', view_print=True)
+    main(3, 0.0003, file_name='simData/l3q2pi1/s1.txt', view_print=True)
+    # main(10, 0.0003, file_name='real_data.txt', view_print=True)

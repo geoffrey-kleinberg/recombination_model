@@ -20,9 +20,9 @@ implemented in R. See `DOCUMENTATION.txt` for details.
 
 When you first clone the repo, run the following commands in your terminal from this directory.
 
-`python3 -m venv .venv`
-`source .venv/bin/activate`
-`pip install -r requirements.txt`
+* `python3 -m venv .venv`
+* `source .venv/bin/activate`
+* `pip install -r requirements.txt`
 
 ### To run 1 data set
 
